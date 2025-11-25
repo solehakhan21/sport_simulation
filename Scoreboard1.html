@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITTF Scoreboard</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #262626;
+            --tt-green: #00853e;
+            --tt-orange: #ff9000;
+            --tt-teal: #5da1a1;
+            --tt-red: #b80000;
+            --header-gray: #404040;
+            --footer-gray: #e8e6e1;
+            --text-white: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+            user-select: none; /* Prevent text selection like an app */
+        }
+
+        /* --- Main Layout --- */
+        .app-container {
+            width: 100%;
+            max-width: 960px; /* "Half page" width constraint */
+            position: relative;
+            background-color: var(--bg-dark);
+        }
+
+        /* --- Header Area --- */
+        .header-wrapper {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        /* Top White Bar */
+        .top-bar-white {
+            background-color: white;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding-left: 110px; /* Space for logo */
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #333;
+            position: relative;
+            z-index: 2;
+        }
+        .time-date-info span {
+            margin-right: 25px;
+        }
+
+        /* Dark Gray Menu Bar */
+        .bar-gray {
+            background-color: var(--header-gray);
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-left: 110px;
+            padding-right: 20px;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+        .header-icon {
+            font-size: 1.4rem;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        /* Circular Logo */
+        .logo-container {
+            position: absolute;
+            top: -5px;
+            left: 15px;
+            width: 85px;
+            height: 85px;
+            background-color: white;
+            border-radius: 50%;
+            border-left: 4px solid #7bb86f; /* Greenish accent */
+            border-top: 4px solid #7bb86f;
+            border-right: 4px solid #eee;
+            border-bottom: 4px solid #eee;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+        .logo-text {
+            font-weight: 900;
+            font-style: italic;
+            font-size: 1.2rem;
+            line-height: 0.8;
+            text-align: center;
+        }
+
+        /* Center Orange Tab "Table 02" */
+        .table-tab {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--tt-orange);
+            color: white;
+            padding: 8px 50px;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            z-index: 5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* "Best of 5" Pill */
+        .best-of-pill {
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--tt-orange);
+            color: black;
+            padding: 3px 25px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            z-index: 6;
+            border: 1px solid #ccc;
+        }
+
+        /* Power Icon */
+        .power-btn {
+            position: absolute;
+            top: 8px;
+            right: 140px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--tt-orange);
+            font-size: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        /* --- Court / Game Area --- */
+        .game-board-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        /* Racket Columns */
+        .racket-col {
+            width: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .racket-label {
+            color: #777;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        /* Racket SVGs */
+        .racket-svg { width: 60px; height: 60px; transition: all 0.3s ease; }
+        
+        /* Active (Server) State */
+        .racket-active circle.face { fill: white; stroke: #999; stroke-width: 1; }
+        .racket-active rect.handle { fill: #ccc; }
+        .racket-active text { fill: black; font-weight: bold; }
+        .racket-active .ball-dot { fill: white; } /* Dots outside */
+        
+        /* Inactive (Receiver) State */
+        .racket-inactive circle.face { fill: #333; stroke: #555; stroke-width: 1; }
+        .racket-inactive rect.handle { fill: #333; }
+        .racket-inactive text { fill: #888; font-weight: bold; }
+        .racket-inactive .ball-dot { fill: #555; }
+
+        /* The Green Table */
+        .tt-table {
+            width: 520px;
+            height: 320px;
+            background-color: var(--tt-green);
+            border: 4px solid white;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.6);
+            margin: 0 15px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        /* Center Lines */
+        .tt-table::after { /* Vertical */
+            content: ''; position: absolute; left: 50%; top: 0; bottom: 0;
+            width: 2px; background-color: rgba(255,255,255,0.7); transform: translateX(-50%);
+        }
+        .tt-table::before { /* Horizontal (Net) */
+            content: ''; position: absolute; top: 50%; left: 0; right: 0;
+            height: 2px; background-color: rgba(255,255,255,0.7); transform: translateY(-50%); z-index: 1;
+        }
+
+        /* Quadrants */
+        .quadrant {
+            width: 50%;
+            height: 50%;
+            position: relative;
+            padding: 12px;
+            box-sizing: border-box;
+            z-index: 2; /* Above lines */
+        }
+
+        /* Player Card Styling */
+        .player-card {
+            color: white;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        .flag-wrapper {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid white;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: middle;
+            margin-bottom: 5px;
+        }
+        .flag-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .player-lbl { font-size: 0.75rem; margin-left: 8px; opacity: 0.9; vertical-align: middle; }
+        .player-name { font-weight: 700; font-size: 0.95rem; line-height: 1.2; text-transform: uppercase; }
+        .player-id { font-size: 0.7rem; font-weight: 600; opacity: 0.8; }
+        .player-cntry { font-weight: 700; font-size: 0.8rem; margin-top: 2px; }
+
+        /* Alignment helpers for quadrants */
+        .q-top-right { display: flex; align-items: flex-start; } /* Default P2 pos */
+        .q-bottom-left { display: flex; align-items: flex-end; } /* Default P1 pos */
+
+        /* --- Footer --- */
+        .footer-section {
+            background-color: var(--footer-gray);
+            padding: 25px 0;
+            border-top: 1px solid #bbb;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn-custom {
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 10px 0;
+            width: 150px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            transition: transform 0.1s;
+        }
+        .btn-custom:active { transform: translateY(2px); }
+
+        .btn-swap { background-color: var(--tt-teal); }
+        .btn-warm { background-color: var(--tt-orange); }
+        .btn-end { background-color: var(--tt-red); }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- HEADER -->
+        <div class="header-wrapper">
+            <!-- Logo -->
+             <div class="bg-neutral-800 h-16 relative rounded-none shadow-lg border-t-4 border-[#8cc63f] flex items-center justify-center">
+                    <div class="half-logo-container">
+                        <div class="flex flex-col items-center justify-center leading-none">
+<img src="logo.jpeg" alt="Logo" style="width: 60px; height: 60px; ">                         
+
+<!-- <span class="font-bold italic text-black text-sm">ITTF</span> -->
+                            <!-- <div class="w-full h-0.5 bg-black mt-1"></div> -->
+                        </div>
+                    </div>
+
+            <!-- Top White Bar -->
+            <div class="top-bar-white">
+                <div class="time-date-info">
+                    <span id="date-display">10/8/2021</span>
+                    <span id="time-display">09:00</span>
+                </div>
+                <div class="power-btn">
+                    <i class="fas fa-power-off"></i>
+                </div>
+            </div>
+
+            <!-- Center Table Tab -->
+            <div class="table-tab">Table 02</div>
+
+            <!-- Dark Menu Bar -->
+            <div class="bar-gray">
+                <i class="fas fa-arrow-left header-icon"></i>
+                <i class="fas fa-bars header-icon"></i>
+            </div>
+
+            <!-- Best Of Pill -->
+            <div class="best-of-pill">Best of 5</div>
+        </div>
+
+        <!-- GAME BOARD -->
+        <div class="game-board-area">
+
+            <!-- Left Racket (Initially Server) -->
+            <div class="racket-col">
+                <!-- SVG for Server Racket -->
+                <svg id="left-racket" class="racket-svg racket-active" viewBox="0 0 100 100">
+                    <rect class="handle" x="45" y="60" width="10" height="30" rx="2" transform="rotate(-45 50 90)" />
+                    <circle class="face" cx="50" cy="45" r="30" />
+                    <text id="left-racket-text" x="50" y="54" text-anchor="middle" font-family="Arial" font-size="24">S</text>
+                    <!-- Decorative Ball Dots -->
+                    <circle class="ball-dot" cx="80" cy="80" r="4" />
+                    <circle class="ball-dot" cx="70" cy="85" r="3" />
+                </svg>
+                <div id="left-label" class="racket-label">Server</div>
+            </div>
+
+            <!-- Green Table -->
+            <div class="tt-table">
+                <!-- Quadrant 1 (Top Left) - Empty initially -->
+                <div class="quadrant" id="q-tl"></div>
+
+                <!-- Quadrant 2 (Top Right) - Player 2 initially -->
+                <div class="quadrant q-top-right" id="q-tr">
+                    <!-- Player 2 Data Block -->
+                    <div class="player-card" id="player2-data">
+                        <div>
+                            <div class="flag-wrapper"><img src="https://flagcdn.com/by.svg" alt="BLR"></div>
+                            <span class="player-lbl">Player 2</span>
+                        </div>
+                        <div class="player-name">SAMSONOV Vladimir</div>
+                        <div class="player-id">108246</div>
+                        <div class="player-cntry">BLR</div>
+                    </div>
+                </div>
+
+                <!-- Quadrant 3 (Bottom Left) - Player 1 initially -->
+                <div class="quadrant q-bottom-left" id="q-bl">
+                    <!-- Player 1 Data Block -->
+                    <div class="player-card" id="player1-data">
+                        <div>
+                            <div class="flag-wrapper"><img src="https://flagcdn.com/kr.svg" alt="KOR"></div>
+                            <span class="player-lbl">Player 1</span>
+                        </div>
+                        <div class="player-name">JEUNG Youngsik</div>
+                        <div class="player-id">104257</div>
+                        <div class="player-cntry">KOR</div>
+                    </div>
+                </div>
+
+                <!-- Quadrant 4 (Bottom Right) - Empty initially -->
+                <div class="quadrant" id="q-br"></div>
+            </div>
+
+            <!-- Right Racket (Initially Receiver) -->
+            <div class="racket-col">
+                <!-- SVG for Receiver Racket -->
+                <svg id="right-racket" class="racket-svg racket-inactive" viewBox="0 0 100 100">
+                    <rect class="handle" x="45" y="60" width="10" height="30" rx="2" transform="rotate(-45 50 90)" />
+                    <circle class="face" cx="50" cy="45" r="30" />
+                    <text id="right-racket-text" x="50" y="54" text-anchor="middle" font-family="Arial" font-size="24">R</text>
+                    <!-- Decorative Ball Dots (Darker) -->
+                    <circle class="ball-dot" cx="80" cy="80" r="4" />
+                    <circle class="ball-dot" cx="70" cy="85" r="3" />
+                </svg>
+                <div id="right-label" class="racket-label">Receiver</div>
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer-section">
+            <button class="btn-custom btn-swap" onclick="swapSides()">Swap Sides</button>
+            <button class="btn-custom btn-warm">Start Warm Up</button>
+            <button class="btn-custom btn-end">End Match</button>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript Logic -->
+    <script>
+        /* ------------------------------------------------
+           1. LIVE DATE AND TIME LOGIC
+           ------------------------------------------------ */
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Format Date: MM/DD/YYYY (as per image style)
+            const dateStr = now.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric'
+            });
+
+            // Format Time: HH:MM (24-hour format to match image "09:00")
+            const timeStr = now.toLocaleTimeString('en-GB', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            document.getElementById('date-display').textContent = dateStr;
+            document.getElementById('time-display').textContent = timeStr;
+        }
+
+        // Run immediately and then every second
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+
+        /* ------------------------------------------------
+           2. SWAP SIDES LOGIC
+           ------------------------------------------------ */
+        
+        // State variable to track if sides are currently swapped
+        let isSwapped = false;
+
+        function swapSides() {
+            // 1. Get the DOM elements for the players and quadrants
+            const p1Data = document.getElementById('player1-data');
+            const p2Data = document.getElementById('player2-data');
+            
+            // The quadrants
+            const qTR = document.getElementById('q-tr'); // Top Right (P2 Start)
+            const qBL = document.getElementById('q-bl'); // Bottom Left (P1 Start)
+            // We will also use Top Left and Bottom Right for the swap logic
+            const qTL = document.getElementById('q-tl');
+            const qBR = document.getElementById('q-br');
+
+            // 2. Perform the physical DOM move
+            if (!isSwapped) {
+                // Scenario: P1 moves to TR position, P2 moves to BL position
+                // Note: CSS flexbox alignment classes on parents handle the 'end' vs 'start' alignment
+                
+                // Move Player 1 to Top Right
+                qTR.innerHTML = ''; 
+                qTR.appendChild(p1Data);
+                
+                // Move Player 2 to Bottom Left
+                qBL.innerHTML = '';
+                qBL.appendChild(p2Data);
+
+                // Add alignment classes if needed, but existing flex classes usually suffice 
+                // if we just swapped contents. However, usually a "Swap" flips the board.
+                // Let's make P1 go to Top Left and P2 go to Bottom Right for a true "Cross" swap?
+                // Or simpler: just swap their contents in their current containers.
+                
+                // Let's do a direct content swap between the two active quadrants for simplicity
+                // To make it look right:
+                // P1 (was bottom-left) -> goes to Top Right
+                // P2 (was top-right) -> goes to Bottom Left
+                // Wait, appendChild actually *moves* the element, so we need temporary holding.
+                
+                // Actually, let's execute the Swap:
+                qTR.appendChild(p1Data); // P1 goes to TR
+                qBL.appendChild(p2Data); // P2 goes to BL
+            } else {
+                // Revert
+                qBL.appendChild(p1Data); // P1 goes back to BL
+                qTR.appendChild(p2Data); // P2 goes back to TR
+            }
+
+            // 3. Swap Server / Receiver Icon Styles
+            toggleRacket('left-racket', 'left-label', 'left-racket-text');
+            toggleRacket('right-racket', 'right-label', 'right-racket-text');
+
+            // Toggle state
+            isSwapped = !isSwapped;
+        }
+
+        function toggleRacket(svgId, labelId, textId) {
+            const svg = document.getElementById(svgId);
+            const label = document.getElementById(labelId);
+            const textObj = document.getElementById(textId);
+
+            // Check current state
+            if (svg.classList.contains('racket-active')) {
+                // Become Inactive (Receiver)
+                svg.classList.remove('racket-active');
+                svg.classList.add('racket-inactive');
+                label.textContent = "Receiver";
+                textObj.textContent = "R";
+            } else {
+                // Become Active (Server)
+                svg.classList.remove('racket-inactive');
+                svg.classList.add('racket-active');
+                label.textContent = "Server";
+                textObj.textContent = "S";
+            }
+        }
+
+    </script>
+</body>
+</html>
