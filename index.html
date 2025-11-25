@@ -3,344 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ITTF Touchpad Simulation</title>
+    <title>Simulation – Touchpad Application</title>
 
-    <!-- 1. Include Bootstrap CSS (For Table View) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- 2. Include Tailwind CSS (For Main Menu) -->
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- 3. Font Awesome -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* --- GLOBAL & FONT STYLES --- */
-        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
-        
-        /* Helper to hide sections */
-        .hidden-section {
-            display: none !important;
-        }
-
-        /* =========================================
-           STYLES FOR SECTION 1: MAIN MENU (Tailwind based)
-           ========================================= */
-        .menu-font { font-family: 'Open Sans', sans-serif; }
-
-        /* Half Logo Logic */
-        .half-logo-container {
+        /* Custom Styles */
+        .half-logo {
             position: absolute;
             left: -40px;
             top: 50%;
             transform: translateY(-50%);
             background: white;
             border-radius: 50%;
-            padding: 5px;
             width: 90px;
             height: 90px;
+            padding: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-            z-index: 20;
             border-right: 4px solid #8cc63f;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
         }
-
-        /* =========================================
-           STYLES FOR SECTION 2: TABLE VIEW (Bootstrap based)
-           ========================================= */
-        .table-view-wrapper {
-            background-color: #f8f9fa;
-            font-family: sans-serif; /* Reset font for table view */
-            min-height: 100vh;
-            padding-top: 20px;
-        }
-
-        .main-wrapper-box {
-            max-width: 900px;
-            margin: 0 auto;
-            background: #fff;
-            padding-bottom: 20px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-
-        /* Custom Header for Table View */
-        .tv-header-container { position: relative; height: 70px; width: 100%; margin-bottom: 30px; }
-        
-        .tv-black-strip {
-            position: absolute; top: 22px; left: 0; width: 100%; height: 35px;
-            background: linear-gradient(to bottom, #444, #111);
-            border-bottom: 3px solid #6aa84f; z-index: 1;
-        }
-
-        .tv-logo-circle {
-            position: absolute; top: 5px; left: 30px; width: 70px; height: 70px;
-            background: white; border-radius: 50%; border: 3px solid #8cc65c;
-            z-index: 3; display: flex; align-items: center; justify-content: center;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
-        }
-
-        .tv-center-tab {
-            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-            background-color: #ff8c00; color: white; font-weight: bold;
-            font-size: 1.2rem; padding: 5px 30px; height: 45px;
-            border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;
-            z-index: 2; border: 2px solid #fff; border-top: none;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .tv-power-icon {
-            position: absolute; top: 15px; right: 10%; background: white;
-            width: 25px; height: 25px; border-radius: 50%; z-index: 4;
-            display: flex; align-items: center; justify-content: center;
-            color: #ff8c00; font-size: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-
-        /* Content Areas */
-        .tv-content-area { padding: 0 20px; }
-        .tv-welcome-text { color: #6aa84f; font-weight: 700; margin-bottom: 10px; font-size: 1.1rem; }
-        .tv-table-box { border: 1px solid #ddd; border-radius: 5px; padding: 10px; background: white; }
-
-        /* Table Styling */
-        .custom-table { margin-bottom: 0; width: 100%; }
-        .custom-table th { background-color: #2ca01c; color: white; font-weight: 500; text-align: center; border: none; padding: 8px; }
-        .custom-table td { text-align: center; vertical-align: middle; font-size: 0.9rem; padding: 8px; border-right: 1px solid #eee; border-bottom: 1px solid #eee; font-weight: 600; }
-        .custom-table td:first-child { text-align: left; font-weight: 400; }
-
-        /* Custom Scrollbar */
-        .scroll-container { position: relative; max-height: 280px; overflow-y: auto; padding-right: 5px; }
-        .scroll-container::-webkit-scrollbar { width: 8px; }
-        .scroll-container::-webkit-scrollbar-track { background: #e0e0e0; border-radius: 4px; }
-        .scroll-container::-webkit-scrollbar-thumb { background: #6aa84f; border-radius: 4px; }
-
-        .tv-back-text {
-            text-align: center; font-weight: bold; margin-top: 15px;
-            font-size: 1rem; color: black; cursor: pointer;
-        }
-        .tv-back-text:hover { color: #6aa84f; text-decoration: underline; }
-
     </style>
 </head>
 <body class="bg-gray-100">
 
-    <!-- =======================================================
-         SECTION 1: MAIN MENU (Tailwind Layout)
-         ======================================================= -->
-    <div id="section-menu" class="w-full min-h-screen flex flex-col items-center py-12 menu-font">
-        <div class="w-full max-w-5xl px-4 md:px-12">
+    <!-- TOP HEADER -->
+    <div class="w-full max-w-5xl mx-auto mt-4">
 
-            <!-- HEADER -->
-            <div class="relative mb-8">
-                <div class="absolute -top-9 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white font-bold px-12 py-2 rounded-t-xl shadow-sm z-10 text-lg tracking-wide">
+        <!-- Black Header Bar -->
+        <div class="bg-neutral-800 h-16 relative shadow-lg border-t-4 border-[#8cc63f] flex items-center justify-center rounded-none">
+
+            <!-- Half Logo -->
+            <div class="half-logo">
+                <img src="logo.jpeg" alt="Logo" style="width:60px;border-radius:100%;">
+            </div>
+
+            <div class="text-white text-lg font-semibold flex items-center gap-2">
+                <i class="fa-regular fa-hand-pointer text-xl"></i>
+                <span>Touchpad Application</span>
+            </div>
+
+            <!-- Icons Right -->
+            <div class="absolute right-4 flex gap-4">
+                <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center shadow">
+                    <i class="fa-solid fa-power-off text-orange-500"></i>
+                </div>
+                <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center shadow">
+                    <i class="fa-solid fa-globe text-red-600"></i>
+                </div>
+            </div>
+
+            <!-- Orange Simulation Tab -->
+            <div class="absolute -top-7 left-1/2 transform -translate-x-1/2">
+                <div class="bg-orange-500 text-white px-12 py-2 rounded-t-xl font-bold shadow">
                     Simulation
                 </div>
-                
-                    <div class="text-white text-lg font-semibold flex items-center gap-2">
-                        <i class="fa-regular fa-hand-pointer text-xl"></i>
-                        <span>Touchpad Application</span>
-                    </div>
-                    <div class="absolute right-4 flex gap-4">
-                        <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md">
-                            <i class="fa-solid fa-power-off text-orange-500 text-lg"></i>
-                        </div>
-                        <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-md">
-                            <i class="fa-solid fa-globe text-red-600 text-lg"></i>
-                        </div>
-                    </div>
-                </div>
             </div>
 
-            <!-- TEXT -->
-            <div class="text-center mb-6">
-                <h1 class="text-[#8cc63f] font-bold text-2xl mb-1">Welcome UMP</h1>
-                <p class="text-gray-700 text-sm">Please select match type and table</p>
+        </div>
+
+        <!-- Welcome Section -->
+        <div class="text-center my-6">
+            <h1 class="text-[#8cc63f] font-bold text-2xl">Welcome UMP</h1>
+            <p class="text-gray-700 text-sm">Please select match type and table</p>
+        </div>
+
+        <!-- White Card -->
+        <div class="bg-white rounded-lg shadow-lg p-10">
+
+            <!-- Radio Buttons -->
+            <div class="flex justify-center gap-8 mb-10 text-sm font-bold">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="match" checked>
+                    <i class="fa-solid fa-people-group text-teal-600"></i>
+                    Team
+                </label>
+
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="match">
+                    <i class="fa-solid fa-user-group text-pink-600"></i>
+                    Doubles/Individual
+                </label>
             </div>
 
-            <!-- CARD & BUTTONS -->
-            <div class="bg-white w-full rounded-lg shadow-lg p-10 pb-16">
-                
-                <!-- Radio -->
-                <div class="flex justify-center gap-8 mb-10 text-sm font-bold text-black">
-                    <label class="flex items-center cursor-pointer gap-2">
-                        <input type="radio" name="match_type" class="w-5 h-5 text-teal-700 focus:ring-teal-600 accent-teal-700" checked>
-                        <i class="fa-solid fa-people-group text-teal-600"></i>
-                        <span>Team</span>
-                    </label>
-                    <label class="flex items-center cursor-pointer gap-2">
-                        <input type="radio" name="match_type" class="w-5 h-5 text-teal-700 focus:ring-teal-600 accent-teal-700">
-                        <i class="fa-solid fa-user-group text-pink-600"></i>
-                        <span>Doubles/Individual</span>
-                    </label>
+            <!-- TABLE BUTTONS -->
+            <div class="max-w-3xl mx-auto">
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                    <button onclick="goToTable(1)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 1</button>
+                    <button onclick="goToTable(2)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 2</button>
+                    <button onclick="goToTable(3)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 3</button>
+                    <button onclick="goToTable(4)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 4</button>
                 </div>
 
-                <!-- Grid of Buttons -->
-                <!-- Note: onclick is now selectTable(n) -->
-                <div class="max-w-3xl mx-auto">
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
-                        <button onclick="selectTable(1)" class="table-btn bg-[#115e59] hover:bg-[#0f504c] active:scale-95 text-white font-medium py-3 rounded shadow-md transition">Table 1</button>
-                        <button onclick="selectTable(2)" class="table-btn bg-[#115e59] hover:bg-[#0f504c] active:scale-95 text-white font-medium py-3 rounded shadow-md transition">Table 2</button>
-                        <button onclick="selectTable(3)" class="table-btn bg-[#115e59] hover:bg-[#0f504c] active:scale-95 text-white font-medium py-3 rounded shadow-md transition">Table 3</button>
-                        <button onclick="selectTable(4)" class="table-btn bg-[#115e59] hover:bg-[#0f504c] active:scale-95 text-white font-medium py-3 rounded shadow-md transition">Table 4</button>
-                    </div>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        <button onclick="selectTable(5)" class="table-btn bg-[#115e59] hover:bg-[#0f504c] active:scale-95 text-white font-medium py-3 rounded shadow-md transition">Table 5</button>
-                        <button onclick="selectTable(6)" class="table-btn bg-[#115e59] hover:bg-[#0f504c] active:scale-95 text-white font-medium py-3 rounded shadow-md transition">Table 6</button>
-                        <div class="hidden md:block"></div>
-                        <div class="hidden md:block"></div>
-                    </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <button onclick="goToTable(5)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 5</button>
+                    <button onclick="goToTable(6)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 6</button>
                 </div>
-                
-                <!-- ENTER BUTTON REMOVED HERE -->
 
             </div>
+
         </div>
     </div>
 
 
-    <!-- =======================================================
-         SECTION 2: SPECIFIC TABLE VIEW (Bootstrap Layout)
-         ======================================================= -->
-    <div id="section-table" class="table-view-wrapper hidden-section">
-        <div class="main-wrapper-box">
-            
-            <!-- Custom Header -->
-            <div class="tv-header-container">
-                <div class="tv-logo-circle">
-                    <i class="fas fa-table-tennis fa-2x text-dark"></i>
-                </div>
-                
-                <!-- Title dynamically updated via JS -->
-                <div class="tv-center-tab" id="table-title-display">Table 01</div>
-
-                <div class="tv-black-strip"></div>
-                
-                <div class="tv-power-icon">
-                    <i class="fas fa-power-off"></i>
-                </div>
-            </div>
-
-            <!-- Body Content -->
-            <div class="tv-content-area">
-                <h6 class="tv-welcome-text">Welcome Umpire, today's matches are</h6>
-
-                <div class="tv-table-box">
-                    <!-- Fixed Header Table -->
-                    <table class="table custom-table mb-0">
-                        <thead>
-                            <tr>
-                                <th style="width: 25%">Event</th>
-                                <th style="width: 15%">Time</th>
-                                <th style="width: 30%">Team 1</th>
-                                <th style="width: 30%">Team 2</th>
-                            </tr>
-                        </thead>
-                    </table>
-
-                    <!-- Scrollable Body with Dynamic Content -->
-                    <div class="scroll-container">
-                        <table class="table custom-table mb-0">
-                            <tbody id="dynamic-table-body">
-                                <!-- Content will be injected here by JavaScript -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Back Button -->
-                <div class="tv-back-text" onclick="goBack()">Back</div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- =======================================================
-         JAVASCRIPT LOGIC
-         ======================================================= -->
+    <!-- JS Redirect -->
     <script>
-        let selectedTableNumber = null;
-
-        // --- DATA SOURCE ---
-        const tableData = {
-            1: [
-                { event: "Mixed Teams", time: "09:40", t1: "SINGAPORE", t2: "MALAYSIA" },
-                { event: "Mixed Teams", time: "10:40", t1: "JAPAN", t2: "FRANCE" },
-                { event: "Mixed Teams", time: "12:20", t1: "KOREA REPUBLIC", t2: "CZECHIA" },
-                { event: "Mixed Teams", time: "13:40", t1: "KOREA REPUBLIC", t2: "MALAYSIA" },
-                { event: "Mixed Teams", time: "15:00", t1: "KOREA REPUBLIC", t2: "ARUBA" },
-            ],
-            2: [
-                { event: "Men's Singles", time: "09:00", t1: "CHINA", t2: "GERMANY" },
-                { event: "Men's Singles", time: "10:00", t1: "SWEDEN", t2: "BRAZIL" },
-                { event: "Men's Singles", time: "11:30", t1: "USA", t2: "CANADA" },
-                { event: "Men's Singles", time: "14:00", t1: "INDIA", t2: "ENGLAND" },
-            ],
-            3: [
-                { event: "Women's Doubles", time: "09:30", t1: "JAPAN", t2: "KOREA" },
-                { event: "Women's Doubles", time: "11:00", t1: "FRANCE", t2: "GERMANY" },
-                { event: "Women's Doubles", time: "13:00", t1: "CHINA", t2: "HONG KONG" },
-                { event: "Women's Doubles", time: "15:30", t1: "SINGAPORE", t2: "THAILAND" },
-            ],
-            4: [
-                { event: "Mixed Doubles", time: "12:20", t1: "SPAIN", t2: "ITALY" },
-                { event: "Mixed Doubles", time: "13:40", t1: "PORTUGAL", t2: "POLAND" },
-                { event: "Mixed Doubles", time: "14:20", t1: "AUSTRIA", t2: "HUNGARY" },
-            ],
-            5: [
-                { event: "Team Event", time: "10:00", t1: "EGYPT", t2: "NIGERIA" },
-                { event: "Team Event", time: "12:00", t1: "AUSTRALIA", t2: "NEW ZEALAND" },
-                { event: "Team Event", time: "14:00", t1: "ARGENTINA", t2: "CHILE" },
-            ],
-            6: [
-                { event: "Finals", time: "16:00", t1: "CHINA", t2: "JAPAN" },
-                { event: "Finals", time: "18:00", t1: "GERMANY", t2: "FRANCE" },
-            ]
-        };
-
-        // Unified Function: Selects table AND enters immediately
-        function selectTable(num) {
-            selectedTableNumber = num;
-
-            // 1. Update Table Title
-            const titleDisplay = document.getElementById('table-title-display');
-            const formattedNum = selectedTableNumber < 10 ? '0' + selectedTableNumber : selectedTableNumber;
-            titleDisplay.textContent = `Table ${formattedNum}`;
-
-            // 2. Load Data
-            const tbody = document.getElementById('dynamic-table-body');
-            tbody.innerHTML = ""; 
-
-            const data = tableData[selectedTableNumber] || [];
-            
-            if(data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center">No matches scheduled.</td></tr>`;
-            } else {
-                data.forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td style="width: 25%">${row.event}</td>
-                        <td style="width: 15%">${row.time}</td>
-                        <td style="width: 30%">${row.t1}</td>
-                        <td style="width: 30%">${row.t2}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            }
-
-            // 3. Switch Views Immediately
-            document.getElementById('section-menu').classList.add('hidden-section');
-            document.getElementById('section-table').classList.remove('hidden-section');
-        }
-
-        // Function: Go Back to Menu
-        function goBack() {
-            document.getElementById('section-table').classList.add('hidden-section');
-            document.getElementById('section-menu').classList.remove('hidden-section');
-            selectedTableNumber = null;
+        function goToTable(num) {
+            window.location.href = "Table" + num + ".html";
         }
     </script>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
