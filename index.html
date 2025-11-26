@@ -80,23 +80,39 @@
             <!-- Radio Buttons -->
             <div class="flex justify-center gap-8 mb-10 text-sm font-bold">
                 <label class="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" name="match" checked>
+                    <input type="radio" id="teamradio" name="match" checked>
                     <i class="fa-solid fa-people-group text-teal-600"></i>
                     Team
                 </label>
 
                 <label class="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" name="match">
+                    <input type="radio" name="match" id="doubleradio">
                     <i class="fa-solid fa-user-group text-pink-600"></i>
                     Doubles/Individual
                 </label>
             </div>
 
             <!-- TABLE BUTTONS -->
-            <div class="max-w-3xl mx-auto">
+            <div class="max-w-3xl mx-auto" id="teams">
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
-                    <button onclick="goToTable(1)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 1</button>
+                    <button onclick="window.location.href='teamt1.html'" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 1 teams</button>
+                    <button onclick="goToTable(2)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 2</button>
+                    <button onclick="goToTable(3)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 3</button>
+                    <button onclick="goToTable(4)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 4</button>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <button onclick="goToTable(5)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 5</button>
+                    <button onclick="goToTable(6)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 6</button>
+                </div>
+
+            </div>
+
+             <div class="max-w-3xl mx-auto hidden" id="doubles">
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                    <button onclick="window.location.href='doublet1.html'" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 1</button>
                     <button onclick="goToTable(2)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 2</button>
                     <button onclick="goToTable(3)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 3</button>
                     <button onclick="goToTable(4)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 4</button>
@@ -112,13 +128,38 @@
         </div>
     </div>
 
+<script>
+    // Get query parameter
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get("mode");
 
-    <!-- JS Redirect -->
-    <script>
-        function goToTable(num) {
-            window.location.href = "Table" + num + ".html";
-        }
-    </script>
+    const teamRadio = document.getElementById("teamradio");
+    const doubleRadio = document.getElementById("doubleradio");
+    const teamsDiv = document.getElementById("teams");
+    const doublesDiv = document.getElementById("doubles");
+
+    // Default = teams
+    if (mode === "doubles") {
+        doubleRadio.checked = true;
+        teamsDiv.classList.add("hidden");
+        doublesDiv.classList.remove("hidden");
+    } else {
+        teamRadio.checked = true;
+        teamsDiv.classList.remove("hidden");
+        doublesDiv.classList.add("hidden");
+    }
+
+    // Manual switching
+    teamRadio.addEventListener("change", () => {
+        teamsDiv.classList.remove("hidden");
+        doublesDiv.classList.add("hidden");
+    });
+
+    doubleRadio.addEventListener("change", () => {
+        teamsDiv.classList.add("hidden");
+        doublesDiv.classList.remove("hidden");
+    });
+</script>
 
 </body>
 </html>
