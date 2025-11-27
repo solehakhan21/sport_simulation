@@ -23,10 +23,9 @@
 
         .header-container {
             position: relative;
-            height: 70px;
+            height: 0px;
             width: 100%;
             background-color: transparent;
-            margin-bottom: 30px;
         }
 
         .black-strip {
