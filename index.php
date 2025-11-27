@@ -1,0 +1,167 @@
+<?php include 'header.php'; ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulation – Touchpad Application</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Custom Styles */
+        .half-logo {
+            position: absolute;
+            left: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            /* padding: 5px; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+           /*  border-right: 4px solid #8cc63f; */
+            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- TOP HEADER -->
+    <div class="w-full max-w-4xl mx-auto mt-4">
+
+        <!-- Black Header Bar -->
+        <div class="bg-neutral-800 h-16 relative shadow-lg flex items-center justify-center rounded-none">
+
+            <!-- Half Logo -->
+            <div class="half-logo">
+                <img src="logo.jpeg" alt="Logo" style="width: 100%; border-radius:100%;">
+            </div>
+
+            <div class="text-white text-lg font-semibold flex items-center gap-2">
+                <i class="fa-regular fa-hand-pointer text-xl"></i>
+                <span>Touchpad Application</span>
+            </div>
+
+            <!-- Icons Right -->
+            <div class="absolute right-4 flex gap-4">
+                <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center shadow">
+                    <i class="fa-solid fa-power-off text-orange-500"></i>
+                </div>
+                <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center shadow">
+                    <i class="fa-solid fa-globe text-red-600"></i>
+                </div>
+            </div>
+
+            <!-- Orange Simulation Tab -->
+            <!-- <div class="absolute -top-7 left-1/2 transform -translate-x-1/2">
+                <div class="bg-orange-500 text-white px-12 py-2 rounded-t-xl font-bold shadow">
+                    Simulation
+                </div>
+            </div> -->
+
+        </div>
+
+        <!-- Welcome Section -->
+        <div class="text-center my-6">
+            <h1 class="text-[#8cc63f] font-bold text-2xl">Welcome UMP</h1>
+            <p class="text-gray-700 text-sm">Please select match type and table</p>
+        </div>
+
+        <!-- White Card -->
+        <div class="bg-white rounded-lg shadow-lg p-10">
+
+            <!-- Radio Buttons -->
+            <div class="flex justify-center gap-8 mb-10 text-sm font-bold">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" id="teamradio" name="match" checked>
+                    <i class="fa-solid fa-people-group text-teal-600"></i>
+                    Team
+                </label>
+
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="match" id="doubleradio">
+                    <i class="fa-solid fa-user-group text-pink-600"></i>
+                    Doubles/Individual
+                </label>
+            </div>
+
+            <!-- TABLE BUTTONS -->
+            <div class="max-w-3xl mx-auto" id="teams">
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                    <button onclick="window.location.href='teamt1.html'" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 1 teams</button>
+                    <button onclick="goToTable(2)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 2</button>
+                    <button onclick="goToTable(3)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 3</button>
+                    <button onclick="goToTable(4)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 4</button>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <button onclick="goToTable(5)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 5</button>
+                    <button onclick="goToTable(6)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 6</button>
+                </div>
+
+            </div>
+
+             <div class="max-w-3xl mx-auto hidden" id="doubles">
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                    <button onclick="window.location.href='doublet1.html'" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 1</button>
+                    <button onclick="goToTable(2)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 2</button>
+                    <button onclick="goToTable(3)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 3</button>
+                    <button onclick="goToTable(4)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 4</button>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <button onclick="goToTable(5)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 5</button>
+                    <button onclick="goToTable(6)" class="bg-[#115e59] text-white py-3 rounded font-medium">Table 6</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+<script>
+    // Get query parameter
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get("mode");
+
+    const teamRadio = document.getElementById("teamradio");
+    const doubleRadio = document.getElementById("doubleradio");
+    const teamsDiv = document.getElementById("teams");
+    const doublesDiv = document.getElementById("doubles");
+
+    // Default = teams
+    if (mode === "doubles") {
+        doubleRadio.checked = true;
+        teamsDiv.classList.add("hidden");
+        doublesDiv.classList.remove("hidden");
+    } else {
+        teamRadio.checked = true;
+        teamsDiv.classList.remove("hidden");
+        doublesDiv.classList.add("hidden");
+    }
+
+    // Manual switching
+    teamRadio.addEventListener("change", () => {
+        teamsDiv.classList.remove("hidden");
+        doublesDiv.classList.add("hidden");
+    });
+
+    doubleRadio.addEventListener("change", () => {
+        teamsDiv.classList.add("hidden");
+        doublesDiv.classList.remove("hidden");
+    });
+</script>
+
+</body>
+</html>
